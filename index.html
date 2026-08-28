@@ -9,141 +9,54 @@
     <!-- Telegram WebApp SDK -->
     <script src="https://telegram.org"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-        }
-        body {
-            background: linear-gradient(135deg, #0f0c1b, #201335);
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-        .header {
-            width: 100%;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        #ton-connect-btn {
-            scale: 0.9;
-        }
-        .balance-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .balance-title {
-            font-size: 14px;
-            color: #8b80a7;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .balance-amount {
-            font-size: 42px;
-            font-weight: bold;
-            color: #00ffcc;
-            text-shadow: 0 0 15px rgba(0, 255, 204, 0.6);
-            margin-top: 5px;
-        }
-        .miner-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            width: 100%;
-        }
-        .mining-core {
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, #00ffcc, #0055ff);
-            border-radius: 50%;
-            box-shadow: 0 0 40px rgba(0, 255, 204, 0.8);
-            cursor: pointer;
-            transition: transform 0.1s ease;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        .mining-core:active {
-            transform: scale(0.95);
-        }
-        .mining-core::after {
-            content: "⚡";
-            font-size: 60px;
-        }
-        .footer {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 15px;
-            display: flex;
-            justify-content: space-around;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .nav-item {
-            text-align: center;
-            color: #a0a0a0;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .nav-item.active {
-            color: #00ffcc;
-            font-weight: bold;
-        }
-        .float-text {
-            position: absolute;
-            color: #00ffcc;
-            font-weight: bold;
-            font-size: 24px;
-            pointer-events: none;
-            animation: floatUp 0.8s ease-out forwards;
-            text-shadow: 0 0 8px rgba(0, 255, 204, 0.8);
-        }
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-100px) scale(1.2); }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; }
+        body { background: linear-gradient(135deg, #0f0c1b, #201335); color: #fff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; }
+        .header { width: 100%; padding: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .balance-container { text-align: center; margin-top: 20px; }
+        .balance-title { font-size: 14px; color: #8b80a7; text-transform: uppercase; letter-spacing: 2px; }
+        .balance-amount { font-size: 42px; font-weight: bold; color: #00ffcc; text-shadow: 0 0 15px rgba(0, 255, 204, 0.6); margin-top: 5px; }
+        .miner-container { flex: 1; display: flex; justify-content: center; align-items: center; position: relative; width: 100%; }
+        .mining-core { width: 200px; height: 200px; background: radial-gradient(circle, #00ffcc, #0055ff); border-radius: 50%; box-shadow: 0 0 40px rgba(0, 255, 204, 0.8); cursor: pointer; transition: transform 0.1s ease; display: flex; justify-content: center; align-items: center; }
+        .mining-core:active { transform: scale(0.95); }
+        .mining-core::after { content: "⚡"; font-size: 60px; }
+        .airdrop-screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; flex: 1; padding: 20px; text-align: center; }
+        .airdrop-card { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(0, 255, 204, 0.2); border-radius: 15px; padding: 25px; width: 90%; max-width: 350px; }
+        .claim-btn { background: linear-gradient(90deg, #00ffcc, #0055ff); color: #fff; border: none; padding: 12px 30px; font-size: 16px; font-weight: bold; border-radius: 25px; margin-top: 20px; width: 100%; }
+        .claim-btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+        .footer { width: 100%; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); padding: 15px; display: flex; justify-content: space-around; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .nav-item { text-align: center; color: #a0a0a0; cursor: pointer; font-size: 14px; padding: 10px; }
+        .nav-item.active { color: #00ffcc; font-weight: bold; }
+        .float-text { position: absolute; color: #00ffcc; font-weight: bold; font-size: 24px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
     </style>
 </head>
 <body>
-
-    <!-- Top Header Layout -->
     <div class="header">
         <div style="font-weight: bold; color: #00ffcc;">🤖 CyberMiner</div>
-        <!-- TON Wallet Connect Button Container -->
         <div id="ton-connect"></div>
     </div>
-
-    <!-- Token Balance View -->
     <div class="balance-container">
         <div class="balance-title">Your $CYBER Balance</div>
         <div class="balance-amount" id="balance">0</div>
     </div>
-
-    <!-- Interactive Tap Target -->
     <div class="miner-container" id="tap-area">
         <div class="mining-core" id="mine-btn"></div>
     </div>
-
-    <!-- Bottom Navigation Bar -->
-    <div class="footer">
-        <div class="nav-item active">⛏️ Mine</div>
-        <div class="nav-item">👥 Tasks</div>
-        <div class="nav-item">🎁 Frens</div>
-        <div class="nav-item">🪙 Airdrop</div>
+    <div class="airdrop-screen" id="airdrop-area">
+        <div class="airdrop-card">
+            <h2 style="color: #00ffcc; margin-bottom: 10px;">$CYBER Airdrop</h2>
+            <p style="color: #a0a0a0; font-size: 14px; margin-bottom: 20px;">Connect your TON wallet and claim your tokens.</p>
+            <div style="font-size: 14px; margin-bottom: 5px; color: #8b80a7;">Minimum Claim: 1000 Coins</div>
+            <button class="claim-btn" id="claim-btn" disabled>Claim Tokens</button>
+            <p id="claim-status" style="margin-top: 15px; font-size: 14px; color: #ffcc00;"></p>
+        </div>
     </div>
-
+    <div class="footer">
+        <div class="nav-item active" id="btn-mine">⛏️ Mine</div>
+        <div class="nav-item" id="btn-airdrop">🪙 Airdrop</div>
+    </div>
     <script>
-        // ১. আপনার রেন্ডার ব্যাকএন্ড লিংক (শেষে কোনো স্ল্যাশ দেবেন না)
+        // ১. আপনার রেন্ডার ব্যাকএন্ড লিংক (এখানে আপনার নিজের আসল Render লিংক বসাবেন)
         const BACKEND_URL = "https://cyberminer-backend.onrender.com"; 
 
         // ২. টেলিগ্রাম মিনি অ্যাপ ইনিশিয়েলাইজ করা
@@ -163,7 +76,7 @@
         const balanceDisplay = document.getElementById('balance');
         const mineBtn = document.getElementById('mine-btn');
 
-        // ৩. ডাটাবেজ থেকে প্লেয়ারের ব্যালেন্স লোড করা (ডাবল কোট ও + চিহ্ন দিয়ে ফিক্সড)
+        // ৩. ডাটাবেজ থেকে প্রোফাইল লোড করা
         function loadPlayerProfile() {
             fetch(BACKEND_URL + "/api/player", {
                 method: 'POST',
@@ -177,10 +90,10 @@
                     balanceDisplay.innerText = score;
                 }
             })
-            .catch(function(err) { console.error("Load Profile Error:", err); });
+            .catch(function(err) { console.error("Load Error:", err); });
         }
 
-        // ৪. প্রতিবার ট্যাপ করার পর ডাটাবেজে কয়েন সেভ করা (ডাবল কোট ও + চিহ্ন দিয়ে ফিক্সড)
+        // ৪. প্রতিবার ট্যাপ করার পর ডাটাবেজে কয়েন সেভ করা
         function sendTapsToBackend(tapsCount) {
             fetch(BACKEND_URL + "/api/player/tap", {
                 method: 'POST',
@@ -190,23 +103,18 @@
             .then(function(res) { return res.json(); })
             .then(function(data) {
                 if (data && data.success) {
-                    console.log("Coin Synced! Current Total:", data.balance);
+                    console.log("Coin Synced! Total:", data.balance);
                 }
             })
-            .catch(function(err) { console.error("Sync Coins Error:", err); });
+            .catch(function(err) { console.error("Sync Error:", err); });
         }
-
         // ৫. ট্যাপ মেকানিজম এবং মাল্টি-ট্যাপ অ্যানিমেশন
         mineBtn.addEventListener('touchstart', function(e) {
             e.preventDefault(); 
             let tapsThisSession = e.touches.length;
             score += tapsThisSession;
             balanceDisplay.innerText = score;
-            
-            // ব্যাকএন্ডে ট্যাপ পাঠানো
             sendTapsToBackend(tapsThisSession);
-
-            // ফ্লোটিং টেক্সট ইফেক্ট
             for (let i = 0; i < e.touches.length; i++) {
                 createFloatingText(e.touches[i].clientX, e.touches[i].clientY);
             }
@@ -222,11 +130,80 @@
             setTimeout(function() { text.remove(); }, 800);
         }
 
-        // ৬. ওয়ালেট কানেকশন সেটআপ
+        // ৬. নেভিগেশন ও স্ক্রিন পরিবর্তন লজিক
+        const btnMine = document.getElementById('btn-mine');
+        const btnAirdrop = document.getElementById('btn-airdrop');
+        const tapArea = document.getElementById('tap-area');
+        const airdropArea = document.getElementById('airdrop-area');
+
+        btnMine.addEventListener('click', function() {
+            btnMine.classList.add('active');
+            btnAirdrop.classList.remove('active');
+            tapArea.style.display = 'flex';
+            airdropArea.style.display = 'none';
+        });
+
+        btnAirdrop.addEventListener('click', function() {
+            btnAirdrop.classList.add('active');
+            btnMine.classList.remove('active');
+            tapArea.style.display = 'none';
+            airdropArea.style.display = 'flex';
+        });
+
+        // ৭. ওয়ালেট কানেকশন ও ক্লেইম সেটআপ
+        const claimButton = document.getElementById('claim-btn');
+        const claimStatusText = document.getElementById('claim-status');
+        let userWalletAddress = "";
+
         const TON_CONNECT_UI = window.TonConnectUI;
         const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
             manifestUrl: 'https://githubusercontent.com',
             buttonRootId: 'ton-connect'
+        });
+
+        tonConnectUI.onStatusChange(function(wallet) {
+            if (wallet) {
+                userWalletAddress = wallet.account.address;
+                claimButton.disabled = false;
+            } else {
+                userWalletAddress = "";
+                claimButton.disabled = true;
+            }
+        });
+
+        claimButton.addEventListener('click', function() {
+            if (score < 1000) {
+                claimStatusText.innerText = "❌ You need at least 1000 coins to claim!";
+                return;
+            }
+            claimButton.disabled = true;
+            claimStatusText.innerText = "⏳ Processing request...";
+
+            fetch(BACKEND_URL + "/api/player/claim", {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    telegramId: telegramUserId,
+                    walletAddress: userWalletAddress,
+                    amount: score
+                })
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    score = data.newBalance;
+                    balanceDisplay.innerText = score;
+                    claimStatusText.style.color = "#00ffcc";
+                    claimStatusText.innerText = "✅ Success! Request submitted.";
+                } else {
+                    claimStatusText.innerText = "❌ Error: " + data.error;
+                    claimButton.disabled = false;
+                }
+            })
+            .catch(function(err) {
+                claimStatusText.innerText = "❌ Server error, try again.";
+                claimButton.disabled = false;
+            });
         });
 
         // গেম চালু হওয়ার সাথে সাথে প্রোফাইল লোড করা
